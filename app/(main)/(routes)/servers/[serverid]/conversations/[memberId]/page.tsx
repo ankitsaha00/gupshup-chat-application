@@ -13,16 +13,16 @@ interface MemberIdPageProps {
         memberId: string;
         serverId: string;
     }>
-    searchParams: {
+    searchParams: Promise<{
         video?: boolean;
-    };
+    }>
 }
 
 const MemberIdPage = async ({ params, searchParams }: MemberIdPageProps) => {
     // Simulate "awaiting" params with an IIFE
     const { serverId, memberId } = await params;
     // Simulate "awaiting" searchParams with an IIFE
-    const { video } = await (async () => Promise.resolve(searchParams))();
+    const { video } = await searchParams;
 
     const profile = await currentProfile();
 
