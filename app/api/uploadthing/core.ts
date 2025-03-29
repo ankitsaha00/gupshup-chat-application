@@ -22,7 +22,7 @@ export const ourFileRouter = {
             console.log("🔹 Middleware running for serverImage");
             return await handleAuth();
         })
-        .onUploadComplete(({ metadata, file }) => {
+        .onUploadComplete(({ file }) => {
             
             return { url: file.ufsUrl };
         }),
@@ -32,7 +32,7 @@ export const ourFileRouter = {
             console.log("🔹 Middleware running for messageFile");
             return await handleAuth();
         })
-        .onUploadComplete(({ metadata, file }) => {
+        .onUploadComplete(({ file }) => {
         
             return { url: file.ufsUrl };
         }),

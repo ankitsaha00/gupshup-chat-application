@@ -6,7 +6,6 @@ import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { NavigationItem } from "./navigation-item";
 import { ModeToggle } from "@/components/mode-toggle";
-import { UserButton } from "@clerk/nextjs";
 import { UserButtonClient } from "./user-button";
 
 export const NavigationSidebar = async () => {

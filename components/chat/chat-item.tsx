@@ -9,7 +9,6 @@ import { Member, MemberRole, Profile } from "@prisma/client";
 import { UserAvatar } from "@/components/user-avatar";
 import { ActionTooltip } from "@/components/action-tooltip";
 import { Edit, FileIcon, ShieldAlert, ShieldCheck, Trash } from "lucide-react";
-import { time } from "console";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
@@ -76,8 +75,8 @@ export const ChatItem = ({
 
    }    
     useEffect(() => {
-        const handleKeyDown = (event:any) => {
-            if (event.key === "Escape" || event.keyCode === 27) {
+        const handleKeyDown = (event:KeyboardEvent) => {
+            if (event.key === "Escape") {
                 setIsEditing(false);
             }
         };

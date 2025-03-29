@@ -19,7 +19,7 @@ const roleIconMap = {
 
 export const ServerMember = ({
     member,
-    server,
+   
 }: ServerMemberProps) => {
     const params = useParams();
     const router = useRouter();
@@ -48,7 +48,9 @@ export const ServerMember = ({
                 )}
             >
                 {member.profile.name}
+            
             </p>
+            {icon && <span>{icon}</span>} 
         </button>
     )
 }

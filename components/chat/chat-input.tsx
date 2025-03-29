@@ -18,9 +18,11 @@ import { useModal } from "@/hooks/use-modal-store";
 import { EmojiPicker } from "@/components/emoji-picker";
 import { useRouter } from "next/navigation";
 
+type QueryParams = Record<string, string | number | boolean | string[] | number[] | boolean[]>;
+
 interface ChatInputProps {
     apiUrl: string;
-    query: Record<string, any>;
+    query: QueryParams;
     name: string;
     type: "conversation" | "channel";
 }
