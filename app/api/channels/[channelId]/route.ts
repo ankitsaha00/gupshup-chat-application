@@ -3,13 +3,17 @@ import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { MemberRole } from "@prisma/client";
 
+interface ChannelIdRouteProps {
+    params: Promise<{ channelId: string }>;
+}
+
 export async function DELETE(
     req: Request,
-    { params }: { params: { channelId: string } }
+    { params }:  ChannelIdRouteProps
 ) {
     try {
         // Simulate "awaiting" params with an IIFE
-        const { channelId } = await (async () => Promise.resolve(params))();
+        const { channelId } = await params;
 
         const profile = await currentProfile();
         const { searchParams } = new URL(req.url);
@@ -60,11 +64,11 @@ export async function DELETE(
 
 export async function PATCH(
     req: Request,
-    { params }: { params: { channelId: string } }
+    { params }: ChannelIdRouteProps
 ) {
     try {
         // Simulate "awaiting" params with an IIFE
-        const { channelId } = await (async () => Promise.resolve(params))();
+        const { channelId } = await params;
 
         const profile = await currentProfile();
         const { name, type } = await req.json();
