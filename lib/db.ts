@@ -1,14 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 
-declare global {
-    namespace NodeJS {
-        interface Global {
-            prisma?: PrismaClient;
-        }
-    }
-}
-
-const globalForPrisma = globalThis as unknown as NodeJS.Global;
+// Use a global variable for Prisma to avoid multiple instances in dev
+const globalForPrisma = globalThis as { prisma?: PrismaClient };
 
 export const db = globalForPrisma.prisma ?? new PrismaClient();
 

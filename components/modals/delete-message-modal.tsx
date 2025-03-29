@@ -11,7 +11,7 @@ import {
 
 import { useModal } from "@/hooks/use-modal-store";
 import { Button } from "@/components/ui/button";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 
 
