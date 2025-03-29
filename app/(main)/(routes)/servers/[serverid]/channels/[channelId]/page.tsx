@@ -9,15 +9,16 @@ import { ChannelType } from "@prisma/client";
 import { redirect } from "next/navigation";
 
 interface ChannelIdPageProps {
-    params: {
+    params: Promise<{
         serverid: string;
         channelId: string;
-    };
+    }
+    >
 }
 
 const ChannelIdPage = async ({ params }: ChannelIdPageProps) => {
     // Simulate "awaiting" params by wrapping in an async IIFE
-    const { serverid, channelId } = await (async () => Promise.resolve(params))();
+    const { serverid, channelId } = await params;
 
     const profile = await currentProfile();
     if (!profile) {

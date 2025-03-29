@@ -4,14 +4,12 @@ import { RedirectToSignIn } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 
 interface ServerIdPageProps {
-    params: {
-        serverid: string;
-    };
+    params: Promise<{ serverid: string }>;
 }
 
 const ServerIdPage = async ({ params }: ServerIdPageProps) => {
     // Simulate "awaiting" params by wrapping in an async IIFE
-    const { serverid } = await (async () => Promise.resolve(params))();
+    const { serverid } = await params;
 
     if (!serverid) {
         return null;

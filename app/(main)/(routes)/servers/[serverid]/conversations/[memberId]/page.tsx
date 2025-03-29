@@ -9,10 +9,10 @@ import { RedirectToSignIn } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 
 interface MemberIdPageProps {
-    params: {
+    params: Promise<{
         memberId: string;
         serverId: string;
-    };
+    }>
     searchParams: {
         video?: boolean;
     };
@@ -20,7 +20,7 @@ interface MemberIdPageProps {
 
 const MemberIdPage = async ({ params, searchParams }: MemberIdPageProps) => {
     // Simulate "awaiting" params with an IIFE
-    const { serverId, memberId } = await (async () => Promise.resolve(params))();
+    const { serverId, memberId } = await params;
     // Simulate "awaiting" searchParams with an IIFE
     const { video } = await (async () => Promise.resolve(searchParams))();
 
