@@ -7,43 +7,44 @@ interface InviteCodePageProps {
     params: {
         inviteCode: string;
     };
-};
+}
 
-const InviteCodePage = async ({
-    params
-}:InviteCodePageProps) => {
+const InviteCodePage = async ({ params }: InviteCodePageProps) => {
+    // Simulate "awaiting" params by wrapping in an async IIFE
+    const { inviteCode } = await (async () => Promise.resolve(params))();
 
     const profile = await currentProfile();
 
-    if(!profile) {
+    if (!profile) {
         return <RedirectToSignIn />;
     }
 
-    if(!params.inviteCode){
+    if (!inviteCode) {
         return redirect("/");
     }
-    const existngServer = await db.server.findFirst({
+
+    const existingServer = await db.server.findFirst({
         where: {
-            inviteCode: params.inviteCode,
+            inviteCode: inviteCode,
             members: {
                 some: {
-                    profileId: profile.id
-                }
-            }
-        }
+                    profileId: profile.id,
+                },
+            },
+        },
     });
 
-    if(existngServer) {
-        return redirect(`/servers/${existngServer.id}`);
+    if (existingServer) {
+        return redirect(`/servers/${existingServer.id}`);
     }
 
-    const server= await db.server.findFirst({
+    const server = await db.server.findFirst({
         where: {
-            inviteCode: params.inviteCode,
-        }
+            inviteCode: inviteCode,
+        },
     });
 
-    if(!server){
+    if (!server) {
         return redirect("/");
     }
 
@@ -56,17 +57,17 @@ const InviteCodePage = async ({
                 create: [
                     {
                         profileId: profile.id,
-                    }
-                ]
-            }
-        }
+                    },
+                ],
+            },
+        },
     });
 
-    if(server) {
+    if (server) {
         return redirect(`/servers/${server.id}`);
-    }  
+    }
 
     return null;
-    }
- 
+};
+
 export default InviteCodePage;
