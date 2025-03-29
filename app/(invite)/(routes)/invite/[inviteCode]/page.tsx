@@ -3,15 +3,14 @@ import { db } from "@/lib/db";
 import { RedirectToSignIn } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 
+// Define the props type with params as a Promise
 interface InviteCodePageProps {
-    params: {
-        inviteCode: string;
-    };
+    params: Promise<{ inviteCode: string }>;
 }
 
 const InviteCodePage = async ({ params }: InviteCodePageProps) => {
-    // Simulate "awaiting" params by wrapping in an async IIFE
-    const { inviteCode } = await (async () => Promise.resolve(params))();
+    // Resolve the params Promise
+    const { inviteCode } = await params;
 
     const profile = await currentProfile();
 
