@@ -16,7 +16,7 @@ export const useChatQuery = ({
   paramKey,
   paramValue,
 }: ChatQueryProps) => {
-  const { isConnected, socket } = useSocket(); // Destructure socket from useSocket
+  const { isConnected, socket } = useSocket();
   const queryClient = useQueryClient();
 
   const fetchMessages = async ({ pageParam }: { pageParam?: string }) => {
@@ -46,38 +46,88 @@ export const useChatQuery = ({
     queryFn: fetchMessages,
     initialPageParam: undefined,
     getNextPageParam: (lastPage) => lastPage?.nextCursor,
-    refetchInterval: isConnected ? false : 1000, // Keep this optimization
+    refetchInterval: isConnected ? false : 1000,
   });
 
-  // Listen for new messages via WebSocket
   useEffect(() => {
-    if (!socket || !isConnected) return;
+    if (!socket) {
+      console.log("Socket object is null or undefined");
+      return;
+    }
+
+    if (!isConnected) {
+      console.log("Socket is not connected");
+      return;
+    }
+
+    console.log("Socket is connected, setting up listeners for channel:", paramValue);
+
+    // Listen for new messages
+    const newMessageEvent = `chat:${paramValue}:message`;
+    console.log("Listening for new message event:", newMessageEvent);
 
     const handleNewMessage = (message: any) => {
-      // Assuming the message object contains the new message data
+      console.log("New message received event triggered:", message);
       queryClient.setQueryData([queryKey], (oldData: any) => {
-        if (!oldData) return { pages: [{ items: [message], nextCursor: null }] };
+        console.log("Updating cache with new message:", message);
+        if (!oldData || !oldData.pages || !oldData.pages.length) {
+          return {
+            pages: [{ items: [message], nextCursor: null }],
+            pageParams: [undefined],
+          };
+        }
 
-        const newPages = oldData.pages.map((page: any, index: number) => {
-          if (index === 0) {
-            return {
-              ...page,
-              items: [message, ...page.items], // Add new message to the top
-            };
-          }
-          return page;
-        });
+        const newPages = [...oldData.pages];
+        newPages[0] = {
+          ...newPages[0],
+          items: [message, ...newPages[0].items],
+        };
 
-        return { ...oldData, pages: newPages };
+        return {
+          ...oldData,
+          pages: newPages,
+        };
       });
     };
 
-    socket.on("newMessage", handleNewMessage);
+    socket.on(newMessageEvent, handleNewMessage);
+
+    // Listen for message updates (edit/delete)
+    const updateMessageEvent = `chat:${paramValue}:messages:update`;
+    console.log("Listening for update message event:", updateMessageEvent);
+
+    const handleUpdateMessage = (updatedMessage: any) => {
+      console.log("Updated message received:", updatedMessage);
+      queryClient.setQueryData([queryKey], (oldData: any) => {
+        if (!oldData || !oldData.pages || !oldData.pages.length) {
+          return oldData;
+        }
+
+        const newPages = oldData.pages.map((page: any) => {
+          const isDeleted = updatedMessage.content === "This message is deleted" && updatedMessage.deleted;
+          const updatedItems = page.items
+            .filter((item: any) => !isDeleted || item.id !== updatedMessage.id)
+            .map((item: any) => (item.id === updatedMessage.id ? updatedMessage : item));
+          return {
+            ...page,
+            items: updatedItems,
+          };
+        });
+
+        return {
+          ...oldData,
+          pages: newPages,
+        };
+      });
+    };
+
+    socket.on(updateMessageEvent, handleUpdateMessage);
 
     return () => {
-      socket.off("newMessage", handleNewMessage);
+      socket.off(newMessageEvent, handleNewMessage);
+      socket.off(updateMessageEvent, handleUpdateMessage);
     };
-  }, [socket, isConnected, queryClient, queryKey]);
+  }, [socket, isConnected, queryClient, queryKey, paramValue]);
 
   return {
     data,
