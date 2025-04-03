@@ -113,7 +113,7 @@ export const ChatItem = ({
         form.reset({
             content: content,
         })
-    }, [content]);
+    }, [content,form]);
 
     const urlParts = fileUrl?.split("?type="); 
     const filetype = urlParts?.[1];
