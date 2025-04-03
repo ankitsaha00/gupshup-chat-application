@@ -60,16 +60,16 @@ export const useChatQuery = ({
       return;
     }
 
-    console.log("Socket is connected, setting up listeners for channel:", paramValue);
+  
 
     // Listen for new messages
     const newMessageEvent = `chat:${paramValue}:message`;
-    console.log("Listening for new message event:", newMessageEvent);
+   
 
     const handleNewMessage = (message: any) => {
-      console.log("New message received event triggered:", message);
+    
       queryClient.setQueryData([queryKey], (oldData: any) => {
-        console.log("Updating cache with new message:", message);
+        
         if (!oldData || !oldData.pages || !oldData.pages.length) {
           return {
             pages: [{ items: [message], nextCursor: null }],
@@ -94,10 +94,10 @@ export const useChatQuery = ({
 
     // Listen for message updates (edit/delete)
     const updateMessageEvent = `chat:${paramValue}:messages:update`;
-    console.log("Listening for update message event:", updateMessageEvent);
+    
 
     const handleUpdateMessage = (updatedMessage: any) => {
-      console.log("Updated message received:", updatedMessage);
+     
       queryClient.setQueryData([queryKey], (oldData: any) => {
         if (!oldData || !oldData.pages || !oldData.pages.length) {
           return oldData;
