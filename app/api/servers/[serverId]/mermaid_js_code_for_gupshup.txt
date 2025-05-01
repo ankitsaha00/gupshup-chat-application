@@ -1,0 +1,58 @@
+flowchart TD
+    U["User"]
+
+    subgraph "Frontend (Next.js App)"
+        FR1["Auth Routes (app/(auth))"]:::frontend
+        FR2["Invite Routes (app/(invite))"]:::frontend
+        FR3["Main/Chat Routes (app/(main))"]:::frontend
+        FR4["Create Server (app/create-server)"]:::frontend
+        FR5["Global Layouts (app/layout.tsx, app/page.tsx)"]:::frontend
+        FR6["Shared Components (components)"]:::frontend
+        FR7["Client Socket Hook (hooks/use-chat-socket.ts)"]:::frontend
+    end
+
+    subgraph "Backend API Endpoints"
+        API1["Main API (app/api)"]:::backend
+        API2["Socket API (pages/api/socket)"]:::backend
+    end
+
+    subgraph "Data Layer"
+        DB1["Prisma ORM"]:::db
+        DB2["Business Logic (lib)"]:::db
+    end
+
+    subgraph "External Integrations"
+        EX1["Livekit API"]:::external
+        EX2["Uploadthing API"]:::external
+    end
+
+    U --> FR6
+    FR6 --> API1
+    FR7 --> API2
+    API1 -->|"dbCalls"| DB1
+    API1 -->|"logicCalls"| DB2
+    API2 -->|"dbCalls"| DB2
+    API1 -->|"extCalls"| EX1
+    API1 -->|"extCalls"| EX2
+
+    click FR1 "https://github.com/ankitsaha00/gupshup-chat-application/tree/master/app/(auth)"
+    click FR2 "https://github.com/ankitsaha00/gupshup-chat-application/tree/master/app/(invite)"
+    click FR3 "https://github.com/ankitsaha00/gupshup-chat-application/tree/master/app/(main)"
+    click FR4 "https://github.com/ankitsaha00/gupshup-chat-application/tree/master/app/create-server"
+    click FR5 "https://github.com/ankitsaha00/gupshup-chat-application/blob/master/app/layout.tsx"
+    click FR6 "https://github.com/ankitsaha00/gupshup-chat-application/tree/master/components"
+    click FR7 "https://github.com/ankitsaha00/gupshup-chat-application/blob/master/hooks/use-chat-socket.ts"
+
+    click API1 "https://github.com/ankitsaha00/gupshup-chat-application/tree/master/app/api"
+    click API2 "https://github.com/ankitsaha00/gupshup-chat-application/tree/master/pages/api/socket"
+
+    click DB1 "https://github.com/ankitsaha00/gupshup-chat-application/blob/master/prisma/schema.prisma"
+    click DB2 "https://github.com/ankitsaha00/gupshup-chat-application/blob/master/lib/db.ts"
+
+    click EX1 "https://github.com/ankitsaha00/gupshup-chat-application/tree/master/app/api/livekit"
+    click EX2 "https://github.com/ankitsaha00/gupshup-chat-application/tree/master/app/api/uploadthing"
+
+    classDef frontend fill:#ADD8E6,stroke:#000,stroke-width:2px;
+    classDef backend fill:#90EE90,stroke:#000,stroke-width:2px;
+    classDef db fill:#D3D3D3,stroke:#000,stroke-width:2px;
+    classDef external fill:#FFA500,stroke:#000,stroke-width:2px;
